@@ -22,6 +22,7 @@ module TwitterTags
     if tag.attr['list']
       Twitter.list_timeline(tag.locals.user, tag.attr['list']).each do |tweet|
         tag.locals.tweet = tweet
+        tag.locals.author = tweet.user.screen_name
         result << tag.expand
       end
     else  
@@ -57,5 +58,10 @@ module TwitterTags
     tweet = tag.locals.tweet
     
     "http://www.twitter.com/#{tag.locals.user}/statuses/#{tweet['id']}"
+  end
+  
+  desc "Returns the twitter username of the current tweet (only makes sense when iterating tweets from a list)"
+  tag "twitter:tweets:tweet:author" do |tag|
+    tag.locals.author
   end
 end
