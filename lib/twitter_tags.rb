@@ -1,5 +1,6 @@
 module TwitterTags
   include Radiant::Taggable
+  include ActionView::Helpers # for auto_link
 
   desc "Creates an context for the twitter functionality" 
   tag "twitter" do |tag|
@@ -23,11 +24,13 @@ module TwitterTags
       Twitter.list_timeline(tag.locals.user, tag.attr['list']).each do |tweet|
         tag.locals.tweet = tweet
         tag.locals.author = tweet.user.screen_name
+        tag.locals.author_avatar_url = tweet.user.profile_image_url
         result << tag.expand
       end
     else  
       Twitter::Search.new.from(tag.locals.user).per_page(count).each do |tweet|
         tag.locals.tweet = tweet
+        tag.locals.author_avatar_url = tweet.profile_image_url
         result << tag.expand
       end
     end
@@ -43,7 +46,7 @@ module TwitterTags
   desc "Returns the text from the tweet"
   tag "twitter:tweets:tweet:text" do |tag|
     tweet = tag.locals.tweet
-    tweet['text']
+    auto_link tweet['text']
   end
 
   desc "Returns the date & time from the tweet"
@@ -63,5 +66,10 @@ module TwitterTags
   desc "Returns the twitter username of the current tweet (only makes sense when iterating tweets from a list)"
   tag "twitter:tweets:tweet:author" do |tag|
     tag.locals.author
+  end
+  
+  desc "Returns the url to the user's avatar"
+  tag "twitter:tweets:tweet:avatar" do |tag|
+    tag.locals.author_avatar_url
   end
 end
