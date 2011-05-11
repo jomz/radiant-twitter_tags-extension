@@ -21,7 +21,7 @@ module TwitterTags
     # iterate over the tweets
     result = []
     if tag.attr['list']
-      Twitter.list_timeline(tag.locals.user, tag.attr['list']).each do |tweet|
+      Twitter.list_timeline(tag.locals.user, tag.attr['list'])[0..(count.to_i - 1)].each do |tweet|
         tag.locals.tweet = tweet
         tag.locals.author = tweet.user.screen_name
         tag.locals.author_avatar_url = tweet.user.profile_image_url
