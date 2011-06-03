@@ -28,7 +28,7 @@ module TwitterTags
         result << tag.expand
       end
     else  
-      Twitter::Search.new.from(tag.locals.user).per_page(count).each do |tweet|
+      Twitter.user_timeline(tag.locals.user)[0..(count -1)].each do |tweet|
         tag.locals.tweet = tweet
         tag.locals.author_avatar_url = tweet.profile_image_url
         result << tag.expand
