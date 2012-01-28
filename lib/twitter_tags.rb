@@ -28,14 +28,14 @@ module TwitterTags
         result << tag.expand
       end
     else  
-      Twitter.user_timeline(tag.locals.user)[0..(count -1)].each do |tweet|
+      Twitter::Search.new.from(tag.locals.user).per_page(count).each do |tweet|
         tag.locals.tweet = tweet
         tag.locals.author_avatar_url = tweet.profile_image_url
         result << tag.expand
       end
     end
     
-    result
+    result.flatten.join('')
   end
   
   desc "Creates the context within which the tweet can be examined"
